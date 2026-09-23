@@ -1,5 +1,5 @@
 import HeroBanner from "@/component/HeroBanner";
-import WorkoutLibrary from "@/component/WorkoutLibrary";
+import WorkoutLibrary from "@/app/WorkoutLibrary/page";
 
 export default function Home() {
   return (

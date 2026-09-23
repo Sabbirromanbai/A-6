@@ -28,7 +28,7 @@ export default function HeroBanner() {
           {/* Action Button */}
           <div className="mt-8">
             <Link
-              href="#workouts"
+              href="/WorkoutLibrary"
               className="inline-flex items-center justify-center bg-[#cfff04] hover:bg-[#b5e000] text-black font-extrabold text-xs sm:text-sm uppercase tracking-wider px-6 py-3.5 rounded-lg transition-all transform active:scale-95 shadow-md"
             >
               BROWSE WORKOUTS

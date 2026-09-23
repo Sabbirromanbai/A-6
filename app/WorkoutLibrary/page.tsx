@@ -1,5 +1,5 @@
 import type { ComponentProps } from "react";
-import WorkoutCard from "./WorkoutCard";
+import WorkoutCard from "@/component/WorkoutCard";
 
 type Workout = ComponentProps<typeof WorkoutCard>["workout"];
 
