@@ -22,7 +22,7 @@ export default function PlanList() {
           Browse the library and add a lift to get today moving
         </p>
         <Link
-          href="/"
+          href="/WorkoutLibrary"
           className="mt-3 bg-[#cfff04] hover:bg-[#b5e000] text-black font-extrabold text-xs px-5 py-2.5 rounded-lg transition-all active:scale-95 inline-block"
         >
           Go to workouts

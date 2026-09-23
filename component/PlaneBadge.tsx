@@ -1,28 +1,41 @@
 "use client";
 
-import { useState } from "react";
+import Link from "next/link";
+import { usePlan } from "@/context/PlanContext";
 
 export default function PlanBadge() {
-  const [planCount, setPlanCount] = useState<number>(0);
-  const [savedCount, setSavedCount] = useState<number>(0);
+  const { todayPlans, savedPlans, setActiveTab } = usePlan();
+
+  const planCount = todayPlans.length;
+  const savedCount = savedPlans.length;
 
   return (
-    <div className="flex items-center gap-2 bg-[#181818] border border-zinc-800 rounded-full px-3 py-1.5 text-xs font-semibold text-white">
+    <div className="flex items-center gap-1.5 bg-[#181818] border border-zinc-800 rounded-full px-3 py-1.5 text-xs font-semibold text-white">
       {/* Plan Section */}
-      <div className="flex items-center gap-2">
-        <span className="text-zinc-300">Plan</span>
-        <span className="w-5 h-5 rounded-full bg-[#cfff04] text-black flex items-center justify-center text-[11px] font-bold">
+      <Link
+        href="/my-plan"
+        onClick={() => setActiveTab("today")}
+        className="flex items-center gap-1.5 hover:text-[#cfff04] transition-colors"
+      >
+        <span className="text-zinc-300 hover:text-white">Plan</span>
+        <span className="w-5 h-5 rounded-full bg-[#cfff04] text-black flex items-center justify-center text-[11px] font-extrabold">
           {planCount}
         </span>
-      </div>
+      </Link>
+
+      <span className="text-zinc-700">|</span>
 
       {/* Saved Section */}
-      <div className="flex items-center gap-2 ml-1">
-        <span className="text-zinc-300">Saved</span>
+      <Link
+        href="/my-plan"
+        onClick={() => setActiveTab("saved")}
+        className="flex items-center gap-1.5 hover:text-[#cfff04] transition-colors"
+      >
+        <span className="text-zinc-300 hover:text-white">Saved</span>
         <span className="w-5 h-5 rounded-full bg-zinc-800 text-zinc-300 flex items-center justify-center text-[11px] font-bold">
           {savedCount}
         </span>
-      </div>
+      </Link>
     </div>
   );
 }

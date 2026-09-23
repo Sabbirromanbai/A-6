@@ -24,16 +24,17 @@ export default function NavLinks({ onItemClick }: NavLinksProps) {
     <>
       {links.map((link) => {
         const isActive = pathname === link.href;
+
         return (
           <Link
             key={link.href}
             href={link.href}
             onClick={onItemClick}
-            className={`transition-colors text-sm font-medium hover:text-[#a8ff00] ${
+            className={`transition-colors text-sm font-medium hover:text-[#a8ff00] flex items-center gap-1.5 ${
               isActive ? "text-[#a8ff00]" : "text-zinc-400"
             }`}
           >
-            {link.name}
+            <span>{link.name}</span>
           </Link>
         );
       })}
