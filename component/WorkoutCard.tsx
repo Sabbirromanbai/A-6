@@ -9,7 +9,7 @@ interface WorkoutCardProps {
 export default function WorkoutCard({ workout }: WorkoutCardProps) {
   return (
     <Link 
-      href={`/details/${workout.id}`}
+      href={`/Details/${workout.id}`}
       className="bg-[#121212] border border-zinc-800/80 rounded-2xl overflow-hidden flex flex-col justify-between hover:border-zinc-700 transition-all duration-200 group"
     >
       {/* Card Body Container */}
