@@ -29,10 +29,10 @@ interface PlanContextType {
   todayPlans: PlanItem[];
   savedPlans: PlanItem[];
 
+  hydrated: boolean;
+
   sortBy: SortOption;
   setSortBy: (sortBy: SortOption) => void;
-
-  hydrated: boolean;
 
   addToTodayPlan: (item: PlanItem) => void;
   addToSavedPlan: (item: PlanItem) => void;
@@ -46,69 +46,76 @@ interface PlanContextType {
   ) => void;
 }
 
-const PlanContext = createContext<PlanContextType | undefined>(
-  undefined,
-);
+const PlanContext = createContext<
+  PlanContextType | undefined
+>(undefined);
 
-const TODAY_PLANS_KEY = "fitlog-today-plans";
-const SAVED_PLANS_KEY = "fitlog-saved-plans";
-
-const DEFAULT_IMAGE =
-  "https://img.magnific.com/free-photo/portrait-anime-character-doing-fitness-exercising_23-2151666664.jpg?w=740";
-
-function loadPlans(key: string): PlanItem[] {
-  if (typeof window === "undefined") {
-    return [];
-  }
-
-  try {
-    const data = localStorage.getItem(key);
-    const parsed = data ? JSON.parse(data) : [];
-
-    return Array.isArray(parsed) ? parsed : [];
-  } catch (error) {
-    console.error("Failed to load FitLog data:", error);
-    return [];
-  }
-}
+const TODAY_KEY = "fitlog-today-plans";
+const SAVED_KEY = "fitlog-saved-plans";
 
 export function PlanProvider({
   children,
 }: {
   children: ReactNode;
 }) {
-  const [activeTab, setActiveTab] =
-    useState<"today" | "saved">("today");
+  const [activeTab, setActiveTab] = useState<
+    "today" | "saved"
+  >("today");
 
-  const [todayPlans, setTodayPlans] = useState<PlanItem[]>(() =>
-    loadPlans(TODAY_PLANS_KEY),
-  );
-  const [savedPlans, setSavedPlans] = useState<PlanItem[]>(() =>
-    loadPlans(SAVED_PLANS_KEY),
-  );
+  const [todayPlans, setTodayPlans] = useState<PlanItem[]>([]);
+  const [savedPlans, setSavedPlans] = useState<PlanItem[]>([]);
 
   const [sortBy, setSortBy] =
     useState<SortOption>("duration");
 
-  const [hydrated] = useState(true);
+  const [hydrated, setHydrated] = useState(false);
 
-  // ==============================
-  // SAVE TO LOCAL STORAGE
-  // ==============================
-
+  // Load data from localStorage
   useEffect(() => {
-    if (!hydrated) {
-      return;
+    try {
+      const todayData =
+        localStorage.getItem(TODAY_KEY);
+
+      const savedData =
+        localStorage.getItem(SAVED_KEY);
+
+      if (todayData) {
+        const parsedToday = JSON.parse(todayData);
+
+        if (Array.isArray(parsedToday)) {
+          setTodayPlans(parsedToday);
+        }
+      }
+
+      if (savedData) {
+        const parsedSaved = JSON.parse(savedData);
+
+        if (Array.isArray(parsedSaved)) {
+          setSavedPlans(parsedSaved);
+        }
+      }
+    } catch (error) {
+      console.error(
+        "Failed to load FitLog data:",
+        error,
+      );
+    } finally {
+      setHydrated(true);
     }
+  }, []);
+
+  // Save data to localStorage
+  useEffect(() => {
+    if (!hydrated) return;
 
     try {
       localStorage.setItem(
-        TODAY_PLANS_KEY,
+        TODAY_KEY,
         JSON.stringify(todayPlans),
       );
 
       localStorage.setItem(
-        SAVED_PLANS_KEY,
+        SAVED_KEY,
         JSON.stringify(savedPlans),
       );
     } catch (error) {
@@ -119,18 +126,8 @@ export function PlanProvider({
     }
   }, [todayPlans, savedPlans, hydrated]);
 
-  // ==============================
-  // ADD TO TODAY PLAN
-  // ==============================
-
+  // Add workout to today's plan
   const addToTodayPlan = (item: PlanItem) => {
-    if (todayPlans.some((plan) => plan.id === item.id)) {
-      toast.warning(
-        "This workout is already in today's plan!",
-      );
-      return;
-    }
-
     if (todayPlans.length >= 5) {
       toast.warning(
         "Today's plan can contain maximum 5 workouts!",
@@ -138,18 +135,23 @@ export function PlanProvider({
       return;
     }
 
-    const newItem: PlanItem = {
-      ...item,
-      image:
-        item.image && item.image.trim() !== ""
-          ? item.image
-          : DEFAULT_IMAGE,
-      isDone: false,
-    };
+    const alreadyExists = todayPlans.some(
+      (plan) => plan.id === item.id,
+    );
 
-    setTodayPlans((previousPlans) => [
-      ...previousPlans,
-      newItem,
+    if (alreadyExists) {
+      toast.warning(
+        "This workout is already in today's plan!",
+      );
+      return;
+    }
+
+    setTodayPlans((previous) => [
+      ...previous,
+      {
+        ...item,
+        isDone: false,
+      },
     ]);
 
     toast.success(
@@ -157,29 +159,22 @@ export function PlanProvider({
     );
   };
 
-  // ==============================
-  // ADD TO SAVED
-  // ==============================
-
+  // Save workout
   const addToSavedPlan = (item: PlanItem) => {
-    if (savedPlans.some((plan) => plan.id === item.id)) {
+    const alreadyExists = savedPlans.some(
+      (plan) => plan.id === item.id,
+    );
+
+    if (alreadyExists) {
       toast.warning(
         "This workout is already saved!",
       );
       return;
     }
 
-    const newItem: PlanItem = {
-      ...item,
-      image:
-        item.image && item.image.trim() !== ""
-          ? item.image
-          : DEFAULT_IMAGE,
-    };
-
-    setSavedPlans((previousPlans) => [
-      ...previousPlans,
-      newItem,
+    setSavedPlans((previous) => [
+      ...previous,
+      item,
     ]);
 
     toast.success(
@@ -187,16 +182,13 @@ export function PlanProvider({
     );
   };
 
-  // ==============================
-  // MARK AS DONE
-  // ==============================
-
+  // Mark workout as done
   const markAsDone = (
     id: string,
     name: string,
   ) => {
-    setTodayPlans((previousPlans) =>
-      previousPlans.map((item) =>
+    setTodayPlans((previous) =>
+      previous.map((item) =>
         item.id === id
           ? {
               ...item,
@@ -206,29 +198,28 @@ export function PlanProvider({
       ),
     );
 
-    toast.success(`${name} marked as done!`);
+    toast.success(
+      `${name} marked as done!`,
+    );
   };
 
-  // ==============================
-  // REMOVE
-  // ==============================
-
+  // Remove workout
   const removeItem = (
     id: string,
     name: string,
     type: "today" | "saved",
   ) => {
     if (type === "today") {
-      setTodayPlans((previousPlans) =>
-        previousPlans.filter(
+      setTodayPlans((previous) =>
+        previous.filter(
           (item) => item.id !== id,
         ),
       );
     }
 
     if (type === "saved") {
-      setSavedPlans((previousPlans) =>
-        previousPlans.filter(
+      setSavedPlans((previous) =>
+        previous.filter(
           (item) => item.id !== id,
         ),
       );
@@ -246,10 +237,10 @@ export function PlanProvider({
         todayPlans,
         savedPlans,
 
+        hydrated,
+
         sortBy,
         setSortBy,
-
-        hydrated,
 
         addToTodayPlan,
         addToSavedPlan,

@@ -6,11 +6,18 @@ import Link from "next/link";
 import { usePlan } from "@/context/PlanContext";
 
 export default function PlanList() {
-  const { activeTab, todayPlans, savedPlans, markAsDone, removeItem, sortBy } =
-    usePlan();
+  const {
+    activeTab,
+    todayPlans,
+    savedPlans,
+    markAsDone,
+    removeItem,
+    sortBy,
+  } = usePlan();
 
   // Current active list
-  const currentList = activeTab === "today" ? todayPlans : savedPlans;
+  const currentList =
+    activeTab === "today" ? todayPlans : savedPlans;
 
   // Sort the list without modifying original state
   const sortedList = [...currentList].sort((a, b) => {
@@ -52,7 +59,7 @@ export default function PlanList() {
       {sortedList.map((item) => (
         <div
           key={item.id}
-          className="bg-[#141414] border border-zinc-800/80 rounded-xl p-3 sm:p-4 flex items-center justify-between gap-4 hover:border-zinc-700 transition-all"
+          className="bg-[#141414] border border-zinc-800/80 rounded-xl p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 hover:border-zinc-700 transition-all"
         >
           {/* Left Side */}
           <div className="flex items-center gap-3.5 sm:gap-4 min-w-0">
@@ -76,7 +83,7 @@ export default function PlanList() {
                 {item.equipment}
               </p>
 
-              <div className="flex items-center gap-2 text-[11px] text-zinc-400 font-medium pt-0.5">
+              <div className="flex items-center gap-2 text-[11px] text-zinc-400 font-medium pt-0.5 flex-wrap">
                 <span>🕒 {item.duration} min</span>
 
                 <span className="text-zinc-600">•</span>
@@ -91,7 +98,7 @@ export default function PlanList() {
           </div>
 
           {/* Right Side */}
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center justify-end gap-2 shrink-0 w-full sm:w-auto">
             {/* View Details */}
             <Link
               href={`/Details/${item.id}`}
@@ -103,9 +110,11 @@ export default function PlanList() {
             {/* Mark as Done */}
             {activeTab === "today" && (
               <button
-                onClick={() => markAsDone(item.id, item.name)}
+                onClick={() =>
+                  markAsDone(item.id, item.name)
+                }
                 disabled={item.isDone}
-                className={`text-xs font-extrabold px-3.5 sm:px-4 py-2 rounded-lg transition-all flex items-center gap-1.5 ${
+                className={`text-xs font-extrabold px-3.5 sm:px-4 py-2 rounded-lg transition-all flex items-center gap-1.5 whitespace-nowrap ${
                   item.isDone
                     ? "bg-zinc-800 text-zinc-500 cursor-not-allowed"
                     : "bg-[#cfff04] hover:bg-[#b5e000] text-black active:scale-95"
@@ -113,14 +122,24 @@ export default function PlanList() {
               >
                 <span>✓</span>
 
-                <span>{item.isDone ? "Done" : "Mark as Done"}</span>
+                <span>
+                  {item.isDone
+                    ? "Done"
+                    : "Mark as Done"}
+                </span>
               </button>
             )}
 
             {/* Remove */}
             <button
-              onClick={() => removeItem(item.id, item.name, activeTab)}
-              className="p-2 text-zinc-500 hover:text-red-400 hover:bg-zinc-800/60 rounded-lg transition-all"
+              onClick={() =>
+                removeItem(
+                  item.id,
+                  item.name,
+                  activeTab,
+                )
+              }
+              className="p-2 text-zinc-500 hover:text-red-400 hover:bg-zinc-800/60 rounded-lg transition-all shrink-0"
               title="Remove"
             >
               <svg

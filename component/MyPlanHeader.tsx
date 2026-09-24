@@ -1,7 +1,10 @@
 "use client";
 
 import React from "react";
-import { usePlan, SortOption } from "@/context/PlanContext";
+import {
+  usePlan,
+  SortOption,
+} from "@/context/PlanContext";
 
 export default function MyPlanHeader() {
   const {
@@ -11,39 +14,49 @@ export default function MyPlanHeader() {
     savedPlans,
     sortBy,
     setSortBy,
+    hydrated,
   } = usePlan();
 
-  // Current active list
   const currentList =
-    activeTab === "today" ? todayPlans : savedPlans;
+    activeTab === "today"
+      ? todayPlans
+      : savedPlans;
 
-  // Metrics
-  const totalExercises = currentList.length;
+  const totalExercises = hydrated
+    ? currentList.length
+    : 0;
 
-  const totalMinutes = currentList.reduce(
-    (acc, curr) => acc + curr.duration,
-    0,
-  );
+  const totalMinutes = hydrated
+    ? currentList.reduce(
+        (acc, curr) =>
+          acc + curr.duration,
+        0,
+      )
+    : 0;
 
-  const totalCalories = currentList.reduce(
-    (acc, curr) => acc + curr.calories,
-    0,
-  );
+  const totalCalories = hydrated
+    ? currentList.reduce(
+        (acc, curr) =>
+          acc + curr.calories,
+        0,
+      )
+    : 0;
 
   return (
     <div className="space-y-6">
-      {/* Page Title & Subtitle */}
+      {/* Header */}
       <div>
         <h1 className="text-2xl sm:text-3xl font-black uppercase tracking-wider text-white">
           MY PLAN
         </h1>
 
         <p className="text-zinc-500 text-xs sm:text-sm mt-1">
-          Cap of five lifts for today. Finish them, then load more.
+          Cap of five lifts for today. Finish them,
+          then load more.
         </p>
       </div>
 
-      {/* Metrics Summary Row */}
+      {/* Metrics */}
       <div className="grid grid-cols-3 gap-3 sm:gap-4 bg-[#141414] border border-zinc-800/80 rounded-2xl p-4 sm:p-5 shadow-lg">
         {/* Exercises */}
         <div>
@@ -79,34 +92,46 @@ export default function MyPlanHeader() {
         </div>
       </div>
 
-      {/* Tabs & Sort */}
+      {/* Tabs + Sort */}
       <div className="flex items-center justify-between border-b border-zinc-800/80 pb-4 flex-wrap gap-3">
         {/* Tabs */}
         <div className="flex items-center gap-1.5 bg-[#141414] p-1.5 rounded-2xl border border-zinc-800/80">
           <button
-            onClick={() => setActiveTab("today")}
+            onClick={() =>
+              setActiveTab("today")
+            }
             className={`px-4 py-2 rounded-xl text-xs font-extrabold transition-all duration-200 ${
               activeTab === "today"
                 ? "bg-zinc-800 text-white shadow-md border border-zinc-700/50"
                 : "text-zinc-400 hover:text-white"
             }`}
           >
-            Today&apos;s Plan ({todayPlans.length})
+            Today&apos;s Plan (
+            {hydrated
+              ? todayPlans.length
+              : 0}
+            )
           </button>
 
           <button
-            onClick={() => setActiveTab("saved")}
+            onClick={() =>
+              setActiveTab("saved")
+            }
             className={`px-4 py-2 rounded-xl text-xs font-extrabold transition-all duration-200 ${
               activeTab === "saved"
                 ? "bg-zinc-800 text-white shadow-md border border-zinc-700/50"
                 : "text-zinc-400 hover:text-white"
             }`}
           >
-            Saved ({savedPlans.length})
+            Saved (
+            {hydrated
+              ? savedPlans.length
+              : 0}
+            )
           </button>
         </div>
 
-        {/* Sort Dropdown */}
+        {/* Sort */}
         <div className="flex items-center gap-2.5">
           <span className="text-xs sm:text-sm font-bold text-zinc-400 uppercase tracking-wide">
             Sort By
@@ -116,36 +141,37 @@ export default function MyPlanHeader() {
             <select
               value={sortBy}
               onChange={(e) =>
-                setSortBy(e.target.value as SortOption)
+                setSortBy(
+                  e.target.value as SortOption,
+                )
               }
-              className="appearance-none bg-gradient-to-r from-zinc-900 to-[#181818] border border-zinc-800 hover:border-[#cfff04]/50 text-white text-xs sm:text-sm font-black px-5 py-2.5 pr-11 rounded-full outline-none focus:ring-2 focus:ring-[#cfff04]/30 cursor-pointer transition-all duration-300 shadow-md group-hover:shadow-[#cfff04]/5"
+              className="appearance-none bg-gradient-to-r from-zinc-900 to-[#181818] border border-zinc-800 hover:border-[#cfff04]/50 text-white text-xs sm:text-sm font-black px-5 py-2.5 pr-11 rounded-full outline-none focus:ring-2 focus:ring-[#cfff04]/30 cursor-pointer transition-all duration-300 shadow-md"
             >
               <option
                 value="duration"
-                className="bg-[#181818] text-white font-semibold"
+                className="bg-[#181818] text-white"
               >
                 Duration
               </option>
 
               <option
                 value="calories"
-                className="bg-[#181818] text-white font-semibold"
+                className="bg-[#181818] text-white"
               >
                 Calories
               </option>
 
               <option
                 value="rating"
-                className="bg-[#181818] text-white font-semibold"
+                className="bg-[#181818] text-white"
               >
                 Rating
               </option>
             </select>
 
-            {/* Chevron */}
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-zinc-400 group-hover:text-[#cfff04] transition-colors duration-200">
               <svg
-                className="w-4 h-4 fill-current transform group-hover:translate-y-0.5 transition-transform"
+                className="w-4 h-4 fill-current"
                 viewBox="0 0 20 20"
               >
                 <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
