@@ -6,7 +6,6 @@ export default function Footer() {
   return (
     <footer className="w-full bg-[#0d0d0d] border-t border-zinc-800/80 py-8 text-xs text-zinc-500">
       <div className="container mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-        
         {/* Left Side: Logo & Brand Name */}
         <Link href="/" className="flex items-center gap-2">
           <Image
@@ -23,9 +22,8 @@ export default function Footer() {
 
         {/* Right Side: Copyright Text */}
         <div className="text-zinc-500 font-normal text-center sm:text-right">
-          © 2026 FitLog — Workout Library. Train hard, log forever.
+          © 2026 FitLog — Workout Library. Train hard, log honest.
         </div>
-
       </div>
     </footer>
   );

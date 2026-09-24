@@ -6,18 +6,11 @@ import Link from "next/link";
 import { usePlan } from "@/context/PlanContext";
 
 export default function PlanList() {
-  const {
-    activeTab,
-    todayPlans,
-    savedPlans,
-    markAsDone,
-    removeItem,
-    sortBy,
-  } = usePlan();
+  const { activeTab, todayPlans, savedPlans, markAsDone, removeItem, sortBy } =
+    usePlan();
 
   // Current active list
-  const currentList =
-    activeTab === "today" ? todayPlans : savedPlans;
+  const currentList = activeTab === "today" ? todayPlans : savedPlans;
 
   // Sort the list without modifying original state
   const sortedList = [...currentList].sort((a, b) => {
@@ -102,7 +95,7 @@ export default function PlanList() {
             {/* View Details */}
             <Link
               href={`/Details/${item.id}`}
-              className="hidden sm:inline-block border border-zinc-800 hover:border-zinc-700 bg-zinc-900/60 hover:bg-zinc-800 text-zinc-300 hover:text-white text-xs font-bold px-3.5 py-2 rounded-lg transition-all"
+              className="inline-flex items-center justify-center border border-zinc-800 hover:border-zinc-700 bg-zinc-900/60 hover:bg-zinc-800 text-zinc-300 hover:text-white text-xs font-bold px-3 py-2 rounded-lg transition-all whitespace-nowrap"
             >
               View Details
             </Link>
@@ -110,9 +103,7 @@ export default function PlanList() {
             {/* Mark as Done */}
             {activeTab === "today" && (
               <button
-                onClick={() =>
-                  markAsDone(item.id, item.name)
-                }
+                onClick={() => markAsDone(item.id, item.name)}
                 disabled={item.isDone}
                 className={`text-xs font-extrabold px-3.5 sm:px-4 py-2 rounded-lg transition-all flex items-center gap-1.5 ${
                   item.isDone
@@ -122,21 +113,13 @@ export default function PlanList() {
               >
                 <span>✓</span>
 
-                <span>
-                  {item.isDone ? "Done" : "Mark as Done"}
-                </span>
+                <span>{item.isDone ? "Done" : "Mark as Done"}</span>
               </button>
             )}
 
             {/* Remove */}
             <button
-              onClick={() =>
-                removeItem(
-                  item.id,
-                  item.name,
-                  activeTab,
-                )
-              }
+              onClick={() => removeItem(item.id, item.name, activeTab)}
               className="p-2 text-zinc-500 hover:text-red-400 hover:bg-zinc-800/60 rounded-lg transition-all"
               title="Remove"
             >
