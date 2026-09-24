@@ -8,4 +8,4 @@ export default function Home() {
         <WorkoutLibrary />
     </div>
   );
-}
+};
