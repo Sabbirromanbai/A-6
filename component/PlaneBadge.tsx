@@ -25,14 +25,14 @@ export default function PlanBadge() {
         href="/my-plan"
         className="px-3 py-2 rounded-full bg-[#cfff04] text-black text-xs font-black"
       >
-        Plan ({todayCount})
+        Plan {todayCount}
       </Link>
 
       <Link
         href="/my-plan"
         className="px-3 py-2 rounded-full border border-zinc-700 text-zinc-300 text-xs font-black hover:border-[#cfff04] hover:text-white transition"
       >
-        Saved ({savedCount})
+        Saved {savedCount}
       </Link>
     </div>
   );
