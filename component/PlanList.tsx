@@ -19,7 +19,7 @@ export default function PlanList() {
   const currentList =
     activeTab === "today" ? todayPlans : savedPlans;
 
-  // Sort the list without modifying original state
+  // Sort list
   const sortedList = [...currentList].sort((a, b) => {
     if (sortBy === "duration") {
       return b.duration - a.duration;
